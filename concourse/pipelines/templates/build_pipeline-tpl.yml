@@ -47,6 +47,7 @@ groups:
   - Test PXF-GP[[gp_ver]]-MINIO-NO-IMPERS on RHEL7
   - Test PXF-GP[[gp_ver]]-HDP2-SECURE-MULTI-IMPERS on RHEL7
   - Test PXF-GP[[gp_ver]]-HDP2-SECURE-MULTI-NO-IMPERS on RHEL7
+  - Test PXF-GP[[gp_ver]]-OSS-NO-IMPERS on RHEL7
 {% set gp_ver = None %}
   - Compatibility Gate for PXF-GP
   - Promote PXF-GP5 and PXF-GP6 Artifacts
@@ -92,6 +93,7 @@ groups:
   - Test PXF-GP[[gp_ver]]-MINIO-NO-IMPERS on RHEL7
   - Test PXF-GP[[gp_ver]]-HDP2-SECURE-MULTI-IMPERS on RHEL7
   - Test PXF-GP[[gp_ver]]-HDP2-SECURE-MULTI-NO-IMPERS on RHEL7
+  - Test PXF-GP[ [ gp_ver ] ]-OSS-NO-IMPERS on RHEL7
 {% set gp_ver = None %}
 - name: Backwards Compatibility
   jobs:
@@ -1048,6 +1050,35 @@ jobs:
       GROUP: hcfs
       IMPERSONATION: false
       PROTOCOL: minio
+      TARGET_OS: centos
+
+- name: Test PXF-GP[[gp_ver]]-OSS-NO-IMPERS on RHEL7
+  plan:
+  - in_parallel:
+    - get: pxf_src
+      passed: [Testing Gate for PXF-GP]
+      trigger: true
+    - get: pxf_tarball
+      resource: pxf_gp[[gp_ver]]_tarball_rhel7
+      passed: [Testing Gate for PXF-GP]
+    - get: gpdb_package
+      resource: gpdb[[gp_ver]]_rhel7_rpm_latest-0
+      passed: [Testing Gate for PXF-GP]
+    - get: gpdb[[gp_ver]]-pxf-dev-centos7-image
+    - get: pxf-automation-dependencies
+    - get: singlecluster
+      resource: singlecluster-hdp2
+  - task: Test PXF-GP[[gp_ver]]-GS-NO-IMPERS on RHEL7
+    file: pxf_src/concourse/tasks/test.yml
+    image: gpdb[[gp_ver]]-pxf-dev-centos7-image
+    params:
+      GP_VER: [[gp_ver]]
+      GROUP: hcfs
+      IMPERSONATION: false
+      OSS_ACCESS_KEY_ID:
+      OSS_SECRET_ACCESS_KEY:
+      OSS_ENDPOINT:
+      PROTOCOL: oss
       TARGET_OS: centos
 
 ## ---------- Multi-node tests ----------
