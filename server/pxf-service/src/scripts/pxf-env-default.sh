@@ -47,17 +47,8 @@ export PXF_PORT=${PXF_PORT:=5888}
 # Memory
 export PXF_JVM_OPTS=${PXF_JVM_OPTS:='-Xmx2g -Xms1g'}
 
-# Server connection timeout (-1 for infinite timeout)
-export PXF_CONNECTION_TIMEOUT=5m
-
-# Threads
-export PXF_MAX_THREADS=${PXF_MAX_THREADS:=200}
-
 # Set to true to enable Remote debug via port 2020
 export PXF_DEBUG=${PXF_DEBUG:-false}
-
-# Fragmenter cache, set to false to disable
-export PXF_FRAGMENTER_CACHE=${PXF_FRAGMENTER_CACHE:-true}
 
 # Kill PXF on OutOfMemoryError, set to false to disable
 export PXF_OOM_KILL=${PXF_OOM_KILL:-true}
@@ -67,7 +58,7 @@ export PXF_OOM_KILL=${PXF_OOM_KILL:-true}
 
 # Additional locations to be class-loaded by the application
 if [[ -n "${PXF_LOADER_PATH}" ]]; then
-  export LOADER_PATH="${PXF_LOADER_PATH},file:${PXF_CONF}/conf,file:${PXF_HOME}/conf,file:${PXF_CONF}/lib"
+  export LOADER_PATH="${PXF_LOADER_PATH},file:${PXF_CONF}/conf,file:${PXF_CONF}/lib"
 else
-  export LOADER_PATH="file:${PXF_CONF}/conf,file:${PXF_HOME}/conf,file:${PXF_CONF}/lib"
+  export LOADER_PATH="file:${PXF_CONF}/conf,file:${PXF_CONF}/lib"
 fi
