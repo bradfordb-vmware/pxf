@@ -128,10 +128,9 @@ task stage(type: Copy) {
     dependsOn ":pxf-service:bootJar"
 
     // Provide the pxf-hbase jar. The pxf-hbase.jar is required for the PXF
-    // HBase connector to support filter pushdown
+    // HBase connector to support filter push down
     from("pxf-hbase/build/libs") { into 'lib' }
     from("pxf-service/build/libs") { into 'server' }
-    from('pxf-service/src/main/resources/pxf-profiles-default.xml') { into 'conf' }
     from('pxf-service/src/scripts/pxf-env-default.sh') { into 'conf' }
     from('pxf-service/src/scripts/') {
         include 'pxf'
