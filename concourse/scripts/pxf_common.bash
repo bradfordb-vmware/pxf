@@ -366,7 +366,7 @@ function setup_impersonation() {
 		exit 1
 	fi
 	if ! find "${GPHD_ROOT}/hbase/lib" -name 'pxf-hbase-*.jar' | grep pxf-hbase; then
-		cp "${PXF_HOME}"/lib/pxf-hbase-*.jar "${GPHD_ROOT}/hbase/lib"
+		cp "${PXF_HOME}"/share/pxf-hbase-*.jar "${GPHD_ROOT}/hbase/lib"
 	fi
 }
 

@@ -129,7 +129,7 @@ task stage(type: Copy) {
 
     // Provide the pxf-hbase jar. The pxf-hbase.jar is required for the PXF
     // HBase connector to support filter push down
-    from("pxf-hbase/build/libs") { into 'lib' }
+    from("pxf-hbase/build/libs") { into 'share' }
     from("pxf-service/build/libs") { into 'server' }
     from('pxf-service/src/scripts/') {
         include 'pxf'
@@ -142,6 +142,8 @@ task stage(type: Copy) {
 
     doLast {
         new File("${buildDir}/stage/pxf/version").text = "${version}\n"
+        mkdir "${buildDir}/stage/pxf/lib"
         mkdir "${buildDir}/stage/pxf/keytabs"
+        mkdir "${buildDir}/stage/pxf/servers/default"
     }
 }
