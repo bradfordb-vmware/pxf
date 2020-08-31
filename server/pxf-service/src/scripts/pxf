@@ -24,6 +24,53 @@
 
 WORKING_DIR="$(pwd)"
 
+PARENT_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+#############################################################################
+# The PXF_CONF property is updated by pxf init script, do not edit manually #
+#############################################################################
+export PXF_CONF=${PXF_CONF:-NOT_INITIALIZED}
+#############################################################################
+
+[[ -f ${PXF_CONF}/conf/pxf-env.sh ]] && source "${PXF_CONF}/conf/pxf-env.sh"
+
+# Default PXF_HOME
+export PXF_HOME=${PXF_HOME:=${PARENT_SCRIPT_DIR}}
+
+# Path to HDFS native libraries
+export LD_LIBRARY_PATH=/usr/lib/hadoop/lib/native:${LD_LIBRARY_PATH}
+
+# Path to JAVA
+export JAVA_HOME=${JAVA_HOME:=/usr/java/default}
+
+# Path to Log directory
+export PXF_LOGDIR=${PXF_LOGDIR:=${PXF_CONF}/logs}
+
+# Path to Run directory
+export PXF_RUNDIR=${PXF_HOME}/run
+
+# Port
+export PXF_PORT=${PXF_PORT:=5888}
+
+# Memory
+export PXF_JVM_OPTS=${PXF_JVM_OPTS:='-Xmx2g -Xms1g'}
+
+# Set to true to enable Remote debug via port 2020
+export PXF_DEBUG=${PXF_DEBUG:-false}
+
+# Kill PXF on OutOfMemoryError, set to false to disable
+export PXF_OOM_KILL=${PXF_OOM_KILL:-true}
+
+# Dump heap on OutOfMemoryError, set to dump path to enable
+# export PXF_OOM_DUMP_PATH=
+
+# Additional locations to be class-loaded by the application
+if [[ -n "${PXF_LOADER_PATH}" ]]; then
+  export LOADER_PATH="${PXF_LOADER_PATH},file:${PXF_CONF}/conf,file:${PXF_CONF}/lib"
+else
+  export LOADER_PATH="file:${PXF_CONF}/conf,file:${PXF_CONF}/lib"
+fi
+
 # Follow symlinks to find the real script
 cd "$(dirname "$0")" || exit 1
 script_file=$(pwd)/$(basename "$0")
@@ -42,7 +89,6 @@ export PXF_HOME=$parent_script_dir
 identity="pxf-service"
 
 jarfile="${PXF_HOME}/server/pxf-service-_PXF_VERSION_.jar"
-default_env_script=${PXF_HOME}/conf/pxf-env-default.sh
 server_templates=${PXF_HOME}/templates/server-templates/
 
 SED_OPTS=(-i)
@@ -103,20 +149,11 @@ function update_pxf_conf()
     fi
 
     echoYellow "Using $PXF_CONF as a location for user-configurable files"
-
-    # update the value on PXF_CONF in the default env file
-    sed "${SED_OPTS[@]}" "s|{PXF_CONF:-.*}$|{PXF_CONF:-\"${PXF_CONF}\"}|g" "$default_env_script"
 }
 
 function getEnvironment()
 {
     local USER_SPECIFIED_JAVA_HOME=${JAVA_HOME}
-    # load default environment
-    if [[ ! -f $default_env_script ]]; then
-        fail "Failed to find $default_env_script"
-    fi
-    # shellcheck source=/Users/pivotal/workspace/pxf/server/pxf-service/src/scripts/pxf-env-default.sh
-    source "$default_env_script"
     # we may have just overridden the user's intended JAVA_HOME
     # by sourcing PXF_CONF/conf/pxf-env.sh
     [[ ${PRESERVE_JAVA_HOME} == true ]] && JAVA_HOME=${USER_SPECIFIED_JAVA_HOME}
@@ -328,9 +365,6 @@ function doReset()
     echoYellow "Cleaning ${PXF_RUNDIR}..."
     rm -rf "$PXF_RUNDIR"
 
-    echoYellow "Reverting changes to ${default_env_script}..."
-    sed "${SED_OPTS[@]}" "s|{PXF_CONF:-\".*\"}|{PXF_CONF:-NOT_INITIALIZED}|g" "$default_env_script"
-
     echoGreen "Finished resetting PXF"
 }
 
@@ -351,11 +385,6 @@ function installExternalTableExtension()
 # doInit handles the init command
 function doInit()
 {
-    if ! grep 'PXF_CONF:-NOT_INITIALIZED' "$default_env_script" > /dev/null; then
-        echoYellow "PXF has already been initialized. Use 'pxf [cluster] reset' before attempting to re-initialize PXF"
-        return 1
-    fi
-
     update_pxf_conf
     # preserve JAVA_HOME in case user is trying to change it
     PRESERVE_JAVA_HOME=true getEnvironment
@@ -382,7 +411,6 @@ function editPxfEnvSh()
 function doStart()
 {
     getEnvironment
-    checkPxfConf
     checkJavaHome
     warnUserEnvScript
     do_start
@@ -426,7 +454,6 @@ function do_start() {
 function doStop()
 {
     getEnvironment
-    checkPxfConf
     checkJavaHome
     warnUserEnvScript
 
@@ -474,7 +501,6 @@ function doStatus()
 {
     getEnvironment
     checkJavaHome
-    checkPxfConf
     warnUserEnvScript
     checkWebapp 1 0 || return 1
     echoGreen "PXF is listening on port $PXF_PORT"
@@ -488,7 +514,6 @@ function doSync()
         fail 'A destination hostname must be provided'
     fi
     getEnvironment
-    checkPxfConf
     warnUserEnvScript
     rsync -az${DELETE:+ --delete} -e "ssh -o StrictHostKeyChecking=no" "$PXF_CONF"/{conf,lib,servers} "${target_host}:$PXF_CONF"
 }
@@ -508,13 +533,6 @@ function warnUserEnvScript()
 {
    local user_env_script=${PXF_CONF}/conf/pxf-env.sh
    [[ -f $user_env_script ]] || echoYellow "WARNING: failed to find ${user_env_script}, default parameters will be used"
-}
-
-function checkPxfConf()
-{
-    if [[ $PXF_CONF == NOT_INITIALIZED ]] || grep 'PXF_CONF:-NOT_INITIALIZED' "$default_env_script" > /dev/null; then
-        fail "PXF is not yet initialized, you must run the 'pxf [cluster] init' command first."
-    fi
 }
 
 pxf_script_command=$1

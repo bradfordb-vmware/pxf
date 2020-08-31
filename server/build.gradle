@@ -131,7 +131,6 @@ task stage(type: Copy) {
     // HBase connector to support filter push down
     from("pxf-hbase/build/libs") { into 'lib' }
     from("pxf-service/build/libs") { into 'server' }
-    from('pxf-service/src/scripts/pxf-env-default.sh') { into 'conf' }
     from('pxf-service/src/scripts/') {
         include 'pxf'
         include 'kill-pxf.sh'
