@@ -238,7 +238,6 @@ function generateUserConfigs()
 {
     # create and setup user configuration directories (only if they do not exist)
     setup_conf_directory "${PXF_CONF}"
-    setup_conf_directory "${PXF_CONF}/keytabs"
     setup_conf_directory "${PXF_CONF}/lib"
     setup_conf_directory "${PXF_CONF}/servers"
     setup_conf_directory "${PXF_CONF}/servers/default"

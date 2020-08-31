@@ -140,5 +140,8 @@ task stage(type: Copy) {
     from('pxf-service/src/templates')
     into "$buildDir/stage/pxf"
 
-    doLast { new File("${buildDir}/stage/pxf/version").text = "${version}\n" }
+    doLast {
+        new File("${buildDir}/stage/pxf/version").text = "${version}\n"
+        mkdir "${buildDir}/stage/pxf/keytabs"
+    }
 }
