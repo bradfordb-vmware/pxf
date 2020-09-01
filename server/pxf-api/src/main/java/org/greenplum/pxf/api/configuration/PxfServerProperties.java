@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class PxfServerProperties {
 
-    public static final String PXF_CONF_PROPERTY = "pxf.conf";
+    public static final String PXF_RUN_PROPERTY = "pxf.run";
 
     /**
      * The property prefix for all properties in this group.
@@ -25,7 +25,7 @@ public class PxfServerProperties {
      * been initialized, it will be set to NOT_INITIALIZED.
      */
     @Getter
-    private String conf;
+    private String run;
 
     /**
      * Enable caching of metadata calls from a single JVM
@@ -58,9 +58,8 @@ public class PxfServerProperties {
         private int maxHeaderCount = 30000;
     }
 
-    public void setConf(String conf) {
-        this.conf = conf;
-        // ^(?!NOT_INITIALIZED).*$
-        System.setProperty(PXF_CONF_PROPERTY, conf);
+    public void setRun(String run) {
+        this.run = run;
+        System.setProperty(PXF_RUN_PROPERTY, run);
     }
 }

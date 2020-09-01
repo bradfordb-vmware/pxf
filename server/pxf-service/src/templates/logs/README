@@ -1,0 +1,4 @@
+Default logs directory
+
+To configure a different logs directory provide the PXF_LOGDIR property in the
+$PXF_RUN/conf/pxf-env.sh directory.

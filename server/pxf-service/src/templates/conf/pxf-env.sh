@@ -8,13 +8,11 @@
 # To update a property, uncomment the line and provide a new value.          #
 ##############################################################################
 
-PXF_CONF="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
-
 # Path to JAVA
 # export JAVA_HOME=/usr/java/default
 
 # Path to Log directory
-# export PXF_LOGDIR="${PXF_CONF}/logs"
+# export PXF_LOGDIR="${PXF_RUN}/logs"
 
 # Memory
 # export PXF_JVM_OPTS="-Xmx2g -Xms1g"
