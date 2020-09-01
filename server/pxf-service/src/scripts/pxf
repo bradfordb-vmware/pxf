@@ -397,6 +397,7 @@ function do_start() {
     [[ $PXF_OOM_KILL = true ]]    && PXF_OPTS+=(-XX:OnOutOfMemoryError="${PXF_HOME}/bin/kill-pxf.sh %p")
     [[ -n "$PXF_OOM_DUMP_PATH" ]] && PXF_OPTS+=(-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$PXF_OOM_DUMP_PATH)
     JAVA_OPTS=($PXF_JVM_OPTS  "${PXF_OPTS[@]}")
+    RUN_ARGS=(--spring.config.location=classpath:/application.properties,file:/${PXF_CONF}/conf/pxf-application.properties)
 
     local arguments=(-Dsun.misc.URLClassPath.disableJarChecking=true "${JAVA_OPTS[@]}" -jar "$jarfile" $RUN_ARGS)
 
