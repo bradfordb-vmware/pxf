@@ -106,7 +106,6 @@ deb:
 	PXF_MAIN_VERSION=$${PXF_VERSION//-SNAPSHOT/} ;\
 	if [[ $${PXF_VERSION} == *"-SNAPSHOT" ]]; then PXF_RELEASE=SNAPSHOT; else PXF_RELEASE=1; fi ;\
 	rm -rf build/debbuild ;\
-	mkdir -p build/debbuild/usr/local/pxf-gp$${GP_MAJOR_VERSION} ;\
 	mkdir -p build/debbuild/usr/local/pxf-gp$${GP_MAJOR_VERSION}/gpextable ;\
 	cp -a external-table/build/stage/* build/debbuild/usr/local/pxf-gp$${GP_MAJOR_VERSION}/gpextable ;\
 	cp -a cli/build/stage/pxf/* build/debbuild/usr/local/pxf-gp$${GP_MAJOR_VERSION} ;\
@@ -142,5 +141,7 @@ help:
 	@echo	'  - test - runs tests for PXF Go CLI and server'
 	@echo	'  - install - install PXF external table extension, CLI and server'
 	@echo	'  - tar - bundle PXF external table extension, CLI, server and tomcat into a single tarball'
-	@echo	'  - rpm - create PXF RPM / DEB package'
-	@echo	'  - rpm-tar - bundle PXF RPM / DEB package along with helper scripts into a single tarball'
+	@echo	'  - rpm - create PXF RPM'
+	@echo	'  - rpm-tar - bundle PXF RPM package along with helper scripts into a single tarball'
+	@echo	'  - deb - create PXF DEB package'
+	@echo	'  - deb-tar - bundle PXF DEB package along with helper scripts into a single tarball'
