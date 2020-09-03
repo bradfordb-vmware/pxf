@@ -141,7 +141,7 @@ help:
 	@echo	'  - test - runs tests for PXF Go CLI and server'
 	@echo	'  - install - install PXF external table extension, CLI and server'
 	@echo	'  - tar - bundle PXF external table extension, CLI, server and tomcat into a single tarball'
-	@echo	'  - rpm - create PXF RPM'
+	@echo	'  - rpm - create PXF RPM package'
 	@echo	'  - rpm-tar - bundle PXF RPM package along with helper scripts into a single tarball'
 	@echo	'  - deb - create PXF DEB package'
 	@echo	'  - deb-tar - bundle PXF DEB package along with helper scripts into a single tarball'
