@@ -1,8 +1,8 @@
 ifndef GPHOME
 $(error GPHOME is not defined)
 endif
-ifndef PXF_CONF
-$(error PXF_CONF is not defined)
+ifndef PXF_RUN
+$(error PXF_RUN is not defined)
 endif
 
 REGRESS_OPTS = --init-file=./init_file
