@@ -179,29 +179,6 @@ function isRunning() {
     ps -p "$1" &> /dev/null
 }
 
-function setup_conf_directory()
-{
-    local target=$1
-    local source=$2
-    local override=$3
-
-    if [[ ! -d $target ]]; then
-        if [[ -z $source ]]; then
-            echoGreen "Creating configuration directory $target ..."
-            mkdir -p "$target"
-        else
-            echoGreen "Copying configurations from $source to $target ..."
-            cp -R "$source" "$(dirname "$target")"
-        fi
-    elif [[ -n $source && -n $override ]]; then
-        echoGreen "Updating configurations from $source to $target ..."
-        cp -R "$source" "$(dirname "$target")"
-    else
-        echoGreen "Directory $target already exists, no update required"
-        return 0
-    fi
-}
-
 function validate_system()
 {
     # validate curl
@@ -276,8 +253,15 @@ function installExternalTableExtension()
         elif [[ ! -f ${GPHOME}/greenplum_path.sh ]]; then
             echoYellow "WARNING: environment variable GPHOME (${GPHOME}) must be set to a valid Greenplum installation, skipping install of Greenplum External Table PXF Extension'"
         else
-            echoGreen "Installing Greenplum External Table PXF Extension into ${GPHOME}"
-            cp -av ${parent_script_dir}/gpextable/* ${GPHOME}
+            echoGreen "Installing Greenplum External Table PXF Extension into '${GPHOME}'"
+
+            local target_control_file="${GPHOME}/share/postgresql/extension/pxf.control"
+            cp -RLv "${parent_script_dir}/gpextable/share/postgresql/extension/pxf.control" "${target_control_file}"
+            chmod 755 "${target_control_file}"
+            # update the directory to point to the extension directory located in the $PXF_HOME path
+            sed "${SED_OPTS[@]}" "s|directory =.*|directory = '${parent_script_dir}/gpextable/share/postgresql/extension'|g" "${target_control_file}"
+            # update the module_pathname to point to the so file located in the $PXF_HOME path
+            sed "${SED_OPTS[@]}" "s|module_pathname =.*|module_pathname = '${parent_script_dir}/gpextable/lib/postgresql/pxf'|g" "${target_control_file}"
         fi
     fi
 }
