@@ -264,7 +264,11 @@ public class SingleCluster extends PhdCluster {
             new File(target).mkdirs();
         }
         File fileToCopy = new File(file);
-        FileUtils.copyFile(new File(file), new File(target + "/" + fileToCopy.getName()), true);
+        File targetFile = new File(target + "/" + fileToCopy.getName());
+
+        if (!fileToCopy.equals(targetFile)) {
+            FileUtils.copyFile(fileToCopy, targetFile, true);
+        }
         ReportUtils.stopLevel(report);
     }
 

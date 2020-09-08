@@ -20,8 +20,8 @@ public abstract class PhdCluster extends ShellSystemObject {
 	private String tempClusterConfDirectory = new File("tempClusterConfDirectory").getAbsolutePath();
 	// the sub directory inside the tempClusterFolderDirectory that leads to pxf-profiles
 	private String pathToPxfConfInGeneralConf = "";
-	// pxf classpath file name
-	private String pxfClasspathFile = "pxf-env.sh";
+	// pxf configuration file name
+	private String pxfConfigurationFile = "pxf-env.sh";
 	// path to local fetched pxf conf directory
 	private String pathToLocalPxfConfDirectory = "";
 	// folder which the cluster admin is installed
@@ -72,7 +72,7 @@ public abstract class PhdCluster extends ShellSystemObject {
 	public void addPathToPxfClassPath(String path) throws Exception {
 		String content = "export PXF_LOADER_PATH=file:" + path;
 		// path to local fetch pxf class file
-		File pathToLocalClassPathFile = new File(getPxfRun() + "/conf", getPxfClasspathFile());
+		File pathToLocalClassPathFile = new File(getPxfRun() + "/conf", getPxfConfigurationFile());
 		ReportUtils.report(report, getClass(), "Add " + content + " to PXF class path (" + pathToLocalClassPathFile.getAbsolutePath() + ")");
 		// read file content
 		String pxfClasspathContent = new String(Files.readAllBytes(Paths.get(pathToLocalClassPathFile.getAbsolutePath())));
@@ -302,13 +302,13 @@ public abstract class PhdCluster extends ShellSystemObject {
 		this.pathToLocalPxfConfDirectory = pathToLocalPxfConfDirectory;
 	}
 
-	public String getPxfClasspathFile() {
-		return pxfClasspathFile;
+	public String getPxfConfigurationFile() {
+		return pxfConfigurationFile;
 	}
 
-	public void setPxfClasspathFile(String pxfClasspathFile) {
+	public void setPxfConfigurationFile(String pxfConfigurationFile) {
 
-        this.pxfClasspathFile = pxfClasspathFile;
+        this.pxfConfigurationFile = pxfConfigurationFile;
 	}
 
     public String getTestKerberosPrincipal() {
