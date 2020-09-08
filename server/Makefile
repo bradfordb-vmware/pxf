@@ -60,8 +60,8 @@ test unittest:
 	./gradlew -Pversion=$(PXF_VERSION) ${GRADLEW_TEST_PARAMS}
 
 .PHONY: stage
-stage: test
-	./gradlew -Pversion=$(PXF_VERSION) stage
+stage:
+	./gradlew -Pversion=$(PXF_VERSION) test stage
 
 .PHONY: stage-notest
 stage-notest:
