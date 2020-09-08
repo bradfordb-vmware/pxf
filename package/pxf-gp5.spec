@@ -36,6 +36,8 @@ fi
 
 %files
 %{prefix}
+%attr(700, -, -) %dir %{prefix}/logs
+%attr(700, -, -) %dir %{prefix}/run
 
 %preun
 # cleanup files and directories created by 'pxf init' command
