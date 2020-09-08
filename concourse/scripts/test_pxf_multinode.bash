@@ -377,7 +377,7 @@ function _main() {
 		setup_gpadmin_user
 		install_pxf_server
 	fi
-	init_and_configure_pxf_server
+	configure_pxf_server
 	remote_access_to_gpdb
 
 	inflate_singlecluster
