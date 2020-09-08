@@ -29,7 +29,7 @@ public abstract class PhdCluster extends ShellSystemObject {
 	// location where PXF is installed, for GPDB-based testing PXF is installed under GPDB, not inside single cluster
 	private String pxfHome;
 	// location where the PXF configuration lives
-	private String pxfConf;
+	private String pxfRun;
 	// name of cluster
 	private String clusterName = "test";
 	// the path on hdfs directory which hive files will be stored
@@ -48,8 +48,9 @@ public abstract class PhdCluster extends ShellSystemObject {
 			setPxfHome(pxfHome);
 		}
 
-		String pxfConf = StringUtils.defaultIfBlank(System.getenv("PXF_CONF"), System.getProperty("user.home") + "/pxf");
-		setPxfConf(pxfConf);
+		String pxfRun = StringUtils
+				.defaultIfBlank(System.getenv("PXF_RUN"), pxfHome);
+		setPxfRun(pxfRun);
 
 		super.init();
 		// some cluster commands can take a while, set max time out for 2 minutes.
@@ -71,7 +72,7 @@ public abstract class PhdCluster extends ShellSystemObject {
 	public void addPathToPxfClassPath(String path) throws Exception {
 		String content = "export PXF_LOADER_PATH=file:" + path;
 		// path to local fetch pxf class file
-		File pathToLocalClassPathFile = new File(getPxfConf() + "/conf", getPxfClasspathFile());
+		File pathToLocalClassPathFile = new File(getPxfRun() + "/conf", getPxfClasspathFile());
 		ReportUtils.report(report, getClass(), "Add " + content + " to PXF class path (" + pathToLocalClassPathFile.getAbsolutePath() + ")");
 		// read file content
 		String pxfClasspathContent = new String(Files.readAllBytes(Paths.get(pathToLocalClassPathFile.getAbsolutePath())));
@@ -230,12 +231,12 @@ public abstract class PhdCluster extends ShellSystemObject {
 		this.pxfHome = pxfHome;
 	}
 
-	public String getPxfConf() {
-		return pxfConf;
+	public String getPxfRun() {
+		return pxfRun;
 	}
 
-	public void setPxfConf(String pxfConf) {
-		this.pxfConf = pxfConf;
+	public void setPxfRun(String pxfRun) {
+		this.pxfRun = pxfRun;
 	}
 
 	public PxfProfileXml getPxfProfiles() {
