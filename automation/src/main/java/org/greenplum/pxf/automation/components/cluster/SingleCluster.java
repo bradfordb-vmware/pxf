@@ -1,16 +1,15 @@
 package org.greenplum.pxf.automation.components.cluster;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.greenplum.pxf.automation.components.cluster.installer.nodes.Node;
+import org.greenplum.pxf.automation.components.common.cli.ShellCommandErrorException;
+import org.greenplum.pxf.automation.utils.jsystem.report.ReportUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-
-import org.greenplum.pxf.automation.components.cluster.installer.nodes.Node;
-import org.greenplum.pxf.automation.components.common.cli.ShellCommandErrorException;
-import org.greenplum.pxf.automation.utils.jsystem.report.ReportUtils;
 
 /**
  * SingleCluster system object using SingleCluster scripts for cluster functionality.
@@ -97,7 +96,7 @@ public class SingleCluster extends PhdCluster {
 
         // treat standalone PXF case separately
         if (service == EnumClusterServices.pxf && getPxfHome() != null) {
-            runCommand(getPxfHome() + "/bin/pxf restart");
+            runCommand("PXF_RUN=" + getPxfRun() + " " + getPxfHome() + "/bin/pxf restart");
         } else {
             String serviceName = service.toString();
             runCommand(getPhdRoot() + "/bin/restart-" + serviceName + ".sh");
